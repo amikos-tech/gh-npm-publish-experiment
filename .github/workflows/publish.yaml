@@ -12,12 +12,39 @@ jobs:
         with:
           node-version: '18'
           registry-url: 'https://npm.pkg.github.com'
+      - name: Create Beta Tag
+        id: tag
+        run: |
+          set -e
+          # Get current version
+          current_version=$(node -p "require('./package.json').version")
+          
+          # Generate a beta tag using GitHub run number
+          beta_tag="beta.${GITHUB_RUN_NUMBER}"
+          
+          # Create full version with beta tag
+          base_version=$(echo $current_version | cut -f1,2 -d.)
+          patch_version=$(echo $current_version | cut -f3 -d.)
+          new_patch_version=$((patch_version + 1))
+          new_version="${current_version}-${beta_tag}"
+          new_version="${base_version}.${new_patch_version}-${beta_tag}"
+          
+          # Create an annotated tag
+          git tag -a "$new_version" -m "Release version $new_version"
+          
+          # Set output for later steps
+          echo "::set-output name=tag_name::$new_version"
+      - name: Push Beta Tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git push origin "${{ steps.tag.outputs.tag_name }}"
       - name: Configure .npmrc
         run: |
           echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > ~/.npmrc
       - name: Install Dependencies
         run: npm install
       - name: Publish Package
-        run: npm publish
+        run: npm publish --tag "${{ steps.tag.outputs.tag_name }}"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
