@@ -30,6 +30,8 @@ jobs:
           new_version="${base_version}.${new_patch_version}-${beta_tag}"
           
           # Create an annotated tag
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
           git tag -a "$new_version" -m "Release version $new_version"
           
           # Set output for later steps
@@ -38,6 +40,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
           git push origin "${{ steps.tag.outputs.tag_name }}"
       - name: Configure .npmrc
         run: |
