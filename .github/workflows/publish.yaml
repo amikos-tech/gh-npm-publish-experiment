@@ -49,6 +49,10 @@ jobs:
       - name: Install Dependencies
         run: npm install
       - name: Publish Package
-        run: npm publish --tag "${{ steps.tag.outputs.tag_name }}"
+#        run: npm publish --tag "${{ steps.tag.outputs.tag_name }}"
+        run: |
+          set -e
+          npm version "${{ steps.tag.outputs.tag_name }}" --no-git-tag-version
+          npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
