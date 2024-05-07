@@ -26,7 +26,6 @@ jobs:
           base_version=$(echo $current_version | cut -f1,2 -d.)
           patch_version=$(echo $current_version | cut -f3 -d.)
           new_patch_version=$((patch_version + 1))
-          new_version="${current_version}-${beta_tag}"
           new_version="${base_version}.${new_patch_version}-${beta_tag}"
           
           # Create an annotated tag
@@ -49,7 +48,6 @@ jobs:
       - name: Install Dependencies
         run: npm install
       - name: Publish Package
-#        run: npm publish --tag "${{ steps.tag.outputs.tag_name }}"
         run: |
           set -e
           npm version "${{ steps.tag.outputs.tag_name }}" --no-git-tag-version
