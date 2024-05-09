@@ -50,7 +50,7 @@ jobs:
       - name: Publish Package
         run: |
           set -e
-          npm version "${{ steps.tag.outputs.tag_name }}" --no-git-tag-version
+          npm version "${{ steps.tag.outputs.tag_name }}" --no-git-tag-version --tag alpha
           npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
