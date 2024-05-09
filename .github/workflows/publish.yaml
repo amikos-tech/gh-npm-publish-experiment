@@ -20,8 +20,8 @@ jobs:
           current_version=$(node -p "require('./package.json').version")
           COMMIT_SHA=$(git rev-parse --short HEAD)
           # Generate a beta tag using GitHub run number
-          # beta_tag="beta.${GITHUB_RUN_NUMBER}"
-          beta_tag="dev.${COMMIT_SHA}"
+          # beta_tag="beta.${GITHUB_RUN_ID}"
+          beta_tag="dev.${COMMIT_SHA}-${GITHUB_RUN_ID}"
           
           # Create full version with beta tag
           base_version=$(echo $current_version | cut -f1,2 -d.)
