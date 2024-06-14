@@ -11,7 +11,7 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '18'
-          registry-url: 'https://npm.pkg.github.com' # this is important for the publishing step
+          registry-url: 'https://npm.pkg.github.com/@amikos-tech' # this is important for the publishing step
       - name: Create Beta Tag
         id: tag
         run: |
