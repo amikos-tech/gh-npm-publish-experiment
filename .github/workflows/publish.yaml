@@ -8,10 +8,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
-          node-version: '18'
-          registry-url: 'https://npm.pkg.github.com/@amikos-tech' # this is important for the publishing step
+          node-version: '16.x'
+          registry-url: 'https://npm.pkg.github.com/' # this is important for the publishing step
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Create Beta Tag
         id: tag
         run: |
@@ -49,6 +50,11 @@ jobs:
 #          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > ~/.npmrc
       - name: Install Dependencies
         run: npm install
+      - name: Update package.json with organization scope
+        run: |
+          ORG_NAME="@amikos-tech"
+          PACKAGE_NAME=$(jq -r '.name' package.json)
+          jq --arg org "$ORG_NAME" --arg name "$PACKAGE_NAME" '.name = "\($org)/\($name)"' package.json > tmp.$$.json && mv tmp.$$.json package.json
       - name: Publish Package
         run: |
           set -e
